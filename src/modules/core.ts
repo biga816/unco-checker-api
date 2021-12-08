@@ -12,14 +12,8 @@ export interface CreateRouterOption {
   routePrefix?: string;
 }
 
-type HTTPMethods =
-  | "head"
-  | "options"
-  | "get"
-  | "put"
-  | "patch"
-  | "post"
-  | "delete";
+type HTTPMethods = "get" | "put" | "patch" | "post" | "delete";
+
 interface ActionMetadata {
   path: string;
   method: HTTPMethods;
@@ -47,6 +41,9 @@ export function Controller(path: string) {
               context.response.body = (this as any)[meta.functionName](context);
             }
           );
+          console.log(
+            `Mapped: [${meta.method.toUpperCase()}]${this.path}/${meta.path}`
+          );
         });
 
         this.route = route;
@@ -56,8 +53,11 @@ export function Controller(path: string) {
 
 export const Get = mappingFactory("get");
 export const Post = mappingFactory("post");
+export const Put = mappingFactory("put");
+export const Patch = mappingFactory("patch");
+export const Delete = mappingFactory("delete");
 
-function mappingFactory(method: ActionMetadata["method"]) {
+function mappingFactory(method: HTTPMethods) {
   return (path = "") =>
     (target: any, functionName: string, _: PropertyDescriptor) => {
       const meta: ActionMetadata = { path, method, functionName };
