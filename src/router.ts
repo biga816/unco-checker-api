@@ -1,4 +1,5 @@
-import { createRouter } from "./modules/core.ts";
+import { createRouter } from "core";
+
 import { SampleController } from "./api/sample/sample.controller.ts ";
 
 export const router = createRouter({

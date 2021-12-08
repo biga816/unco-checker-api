@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import "https://esm.sh/reflect-metadata";
-import { Router, RouterContext } from "https://deno.land/x/oak/mod.ts";
+import { Router, RouterContext } from "oak";
 
 export abstract class MyRouter {
   route!: Router;

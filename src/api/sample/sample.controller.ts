@@ -1,4 +1,4 @@
-import { Controller, Get } from "../../modules/core.ts";
+import { Controller, Get } from "core";
 
 @Controller("sample")
 export class SampleController {
