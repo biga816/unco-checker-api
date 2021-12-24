@@ -2,7 +2,6 @@
 import { Reflect } from "https://deno.land/x/reflect_metadata@v0.1.12-2/mod.ts";
 import { Router, RouterContext } from "oak";
 import { bootstrap } from "inject";
-import { setInjectionMetadata } from "https://deno.land/x/inject@v0.1.2/injector.ts";
 
 export abstract class MyRouter {
   route!: Router;
@@ -24,10 +23,6 @@ interface ActionMetadata {
 }
 
 const ACTION_KEY = Symbol("action");
-
-interface Constructor<T> {
-  new (...args: any[]): T;
-}
 
 export function Controller<T extends { new (...instance: any[]): Object }>(
   path: string
