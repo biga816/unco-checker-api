@@ -1,6 +1,8 @@
 // deno-lint-ignore-file no-explicit-any
-import "https://esm.sh/reflect-metadata";
+import { Reflect } from "https://deno.land/x/reflect_metadata@v0.1.12-2/mod.ts";
 import { Router, RouterContext } from "oak";
+import { bootstrap } from "inject";
+import { setInjectionMetadata } from "https://deno.land/x/inject@v0.1.2/injector.ts";
 
 export abstract class MyRouter {
   route!: Router;
@@ -9,6 +11,7 @@ export abstract class MyRouter {
 
 export interface CreateRouterOption {
   controllers: any[];
+  providers: any[];
   routePrefix?: string;
 }
 
@@ -22,13 +25,21 @@ interface ActionMetadata {
 
 const ACTION_KEY = Symbol("action");
 
-export function Controller(path: string) {
-  return (fn: new (routePrefix?: string) => any): any =>
+interface Constructor<T> {
+  new (...args: any[]): T;
+}
+
+export function Controller<T extends { new (...instance: any[]): Object }>(
+  path: string
+) {
+  return (fn: T): any =>
     class extends fn {
-      constructor(routePrefix?: string) {
-        super(routePrefix);
+      private _path?: string;
+      private _route?: Router;
+
+      init(routePrefix?: string) {
         const prefix = routePrefix ? `/${routePrefix}` : "";
-        this.path = `${prefix}/${path}`;
+        this._path = `${prefix}/${path}`;
         const route = new Router();
         const list: ActionMetadata[] = Reflect.getMetadata(
           ACTION_KEY,
@@ -46,7 +57,15 @@ export function Controller(path: string) {
           );
         });
 
-        this.route = route;
+        this._route = route;
+      }
+
+      get path(): string | undefined {
+        return this._path;
+      }
+
+      get route(): Router | undefined {
+        return this._route;
       }
     };
 }
@@ -76,11 +95,17 @@ function addMetadata<T>(value: T, target: any, key: symbol) {
 
 export const createRouter = ({
   controllers,
+  providers,
   routePrefix,
 }: CreateRouterOption) => {
   const router = new Router();
-  controllers.forEach((Controller: new (routePrefix?: string) => MyRouter) => {
-    const { route, path } = new Controller(routePrefix);
+  controllers.forEach((Controller, i) => {
+    const map = new Map();
+    Reflect.defineMetadata("design:paramtypes", providers, Controller);
+    const controller = bootstrap<any>(Controller);
+    controller.init(routePrefix);
+    const path = controller.path;
+    const route = controller.route;
     router.use(path, route.routes(), route.allowedMethods());
   });
   return router;
