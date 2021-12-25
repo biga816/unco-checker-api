@@ -3,11 +3,6 @@ import { Reflect } from "https://deno.land/x/reflect_metadata@v0.1.12-2/mod.ts";
 import { Router, RouterContext } from "oak";
 import { bootstrap } from "inject";
 
-export abstract class MyRouter {
-  route!: Router;
-  path!: string;
-}
-
 export interface CreateRouterOption {
   controllers: any[];
   providers: any[];
@@ -65,13 +60,13 @@ export function Controller<T extends { new (...instance: any[]): Object }>(
     };
 }
 
-export const Get = mappingFactory("get");
-export const Post = mappingFactory("post");
-export const Put = mappingFactory("put");
-export const Patch = mappingFactory("patch");
-export const Delete = mappingFactory("delete");
+export const Get = mappingMethod("get");
+export const Post = mappingMethod("post");
+export const Put = mappingMethod("put");
+export const Patch = mappingMethod("patch");
+export const Delete = mappingMethod("delete");
 
-function mappingFactory(method: HTTPMethods) {
+function mappingMethod(method: HTTPMethods) {
   return (path = "") =>
     (target: any, functionName: string, _: PropertyDescriptor) => {
       const meta: ActionMetadata = { path, method, functionName };
@@ -94,8 +89,7 @@ export const createRouter = ({
   routePrefix,
 }: CreateRouterOption) => {
   const router = new Router();
-  controllers.forEach((Controller, i) => {
-    const map = new Map();
+  controllers.forEach((Controller) => {
     Reflect.defineMetadata("design:paramtypes", providers, Controller);
     const controller = bootstrap<any>(Controller);
     controller.init(routePrefix);
