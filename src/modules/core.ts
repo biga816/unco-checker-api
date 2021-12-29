@@ -38,10 +38,12 @@ export function Controller<T extends { new (...instance: any[]): Object }>(
 
           (route as any)[meta.method](
             `/${meta.path}`,
-            (context: RouterContext<string>) => {
-              const inputs = argsMetadataList
-                .sort((a, b) => a.index - b.index)
-                .map((data) => getContextData(data, context));
+            async (context: RouterContext<string>) => {
+              const inputs = await Promise.all(
+                argsMetadataList
+                  .sort((a, b) => a.index - b.index)
+                  .map(async (data) => getContextData(data, context))
+              );
               context.response.body = (this as any)[meta.functionName](
                 ...inputs
               );
@@ -99,8 +101,8 @@ function getContextData(args: RouteArgsMetadata, ctx: RouterContext<string>) {
       const params = ctx.params;
       return data ? params[data.toString()] : params;
     case RouteParamtypes.BODY:
-      const body = ctx.request.body().value;
-      return body;
+      const body = ctx.request.body();
+      return body.value;
     default:
       return;
   }

@@ -38,6 +38,10 @@ export function Param(property?: string): ParameterDecorator {
   return createPipesRouteParamDecorator(RouteParamtypes.PARAM)(property);
 }
 
+export function Body(property?: string): ParameterDecorator {
+  return createPipesRouteParamDecorator(RouteParamtypes.BODY)(property);
+}
+
 const createPipesRouteParamDecorator =
   (paramtype: RouteParamtypes) =>
   (data?: any): ParameterDecorator =>
