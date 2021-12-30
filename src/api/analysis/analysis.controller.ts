@@ -6,7 +6,7 @@ import {
 } from "../../modules/decorators/route-params.decorator.ts";
 import { AnalysisService } from "./analysis.service.ts";
 
-@Controller("analysis")
+@Controller()
 export class AnalysisController {
   constructor(private readonly analysisService: AnalysisService) {}
 

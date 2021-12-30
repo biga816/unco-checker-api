@@ -12,7 +12,7 @@ import { RouteParamtypes } from "./enums/route-paramtypes.enum.ts";
 import { ACTION_KEY, ROUTE_ARGS_METADATA, HTTPMethods } from "./const.ts";
 
 export function Controller<T extends { new (...instance: any[]): Object }>(
-  path: string
+  path?: string
 ) {
   return (fn: T): any =>
     class extends fn {
@@ -21,7 +21,7 @@ export function Controller<T extends { new (...instance: any[]): Object }>(
 
       init(routePrefix?: string) {
         const prefix = routePrefix ? `/${routePrefix}` : "";
-        this._path = `${prefix}/${path}`;
+        this._path = prefix + (path ? `/${path}` : "");
         const route = new Router();
         const list: ActionMetadata[] = Reflect.getMetadata(
           ACTION_KEY,
@@ -49,9 +49,9 @@ export function Controller<T extends { new (...instance: any[]): Object }>(
               );
             }
           );
-          console.log(
-            `Mapped: [${meta.method.toUpperCase()}]${this.path}/${meta.path}`
-          );
+
+          const fullPath = this.path + (meta.path ? `/${meta.path}` : "");
+          console.log(`Mapped: [${meta.method.toUpperCase()}]${fullPath}`);
         });
 
         this._route = route;
@@ -108,19 +108,49 @@ function getContextData(args: RouteArgsMetadata, ctx: RouterContext<string>) {
   }
 }
 
-export const createRouter = ({
-  controllers,
-  providers,
-  routePrefix,
-}: CreateRouterOption) => {
-  const router = new Router();
+export const createRouter = (
+  { controllers, providers, routePrefix }: CreateRouterOption,
+  prefix?: string,
+  router = new Router()
+) => {
   controllers.forEach((Controller) => {
     Reflect.defineMetadata("design:paramtypes", providers, Controller);
     const controller = bootstrap<any>(Controller);
-    controller.init(routePrefix);
+    const prefixFull = prefix
+      ? prefix + (routePrefix ? `/${routePrefix}` : "")
+      : routePrefix;
+    controller.init(prefixFull);
     const path = controller.path;
     const route = controller.route;
     router.use(path, route.routes(), route.allowedMethods());
   });
   return router;
+};
+
+export function Module<T extends { new (...instance: any[]): Object }>(
+  data: CreateRouterOption
+) {
+  return (fn: T): any => {
+    Reflect.defineMetadata("design:modules", data, fn.prototype);
+  };
+}
+
+const getRouter = (module: any, prefix?: string, router?: Router) => {
+  const mainModuleOption: CreateRouterOption = Reflect.getMetadata(
+    "design:modules",
+    module.prototype
+  );
+
+  const newRouter = createRouter(mainModuleOption, prefix, router);
+
+  mainModuleOption.modules?.map((module) =>
+    getRouter(module, mainModuleOption.routePrefix, newRouter)
+  ) || [];
+
+  return newRouter;
+};
+
+export const assignModule = (module: any) => {
+  const router = getRouter(module);
+  return router.routes();
 };
