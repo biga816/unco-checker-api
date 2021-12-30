@@ -1,4 +1,4 @@
-import { RouteParamtypes } from "../enums/route-paramtypes.enum.ts";
+import { RouteParamtypes } from "../enums/mod.ts";
 export type ParamData = object | string | number;
 
 export interface RouteArgsMetadata {

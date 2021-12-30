@@ -1,6 +1,6 @@
 {
   "imports": {
-    "core": "./src/modules/core.ts",
+    "core": "./src/core/mod.ts",
     "oak": "https://deno.land/x/oak@v10.0.0/mod.ts",
     "inject": "https://deno.land/x/inject@v0.1.2/mod.ts"
   }

@@ -3,7 +3,7 @@ import {
   isNotEmpty,
   isString,
 } from "https://deno.land/x/deno_class_validator@v1.0.0/mod.ts";
-import { RouteParamtypes } from "../enums/route-paramtypes.enum.ts";
+import { RouteParamtypes } from "../enums/mod.ts";
 import { ROUTE_ARGS_METADATA } from "../const.ts";
 import { RouteArgsMetadata, ParamData } from "../interfaces/mod.ts";
 

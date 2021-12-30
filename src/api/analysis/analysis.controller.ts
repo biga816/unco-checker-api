@@ -1,9 +1,4 @@
-import { Controller, Get, Post } from "core";
-import {
-  Query,
-  Param,
-  Body,
-} from "../../modules/decorators/route-params.decorator.ts";
+import { Controller, Get, Post, Query, Param, Body } from "core";
 import { AnalysisService } from "./analysis.service.ts";
 
 @Controller()
