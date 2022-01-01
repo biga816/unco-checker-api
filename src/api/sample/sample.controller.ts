@@ -1,10 +1,10 @@
-import { Controller, Get } from "core";
+import { Controller, Get, Headers, Request } from "core";
 
 @Controller("sample")
 export class SampleController {
   @Get()
-  get() {
-    return "ok";
+  get(@Headers("user-agent") userAgent: string) {
+    return userAgent;
   }
 
   @Get("test")

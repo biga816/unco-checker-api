@@ -66,6 +66,10 @@ function getContextData(args: RouteArgsMetadata, ctx: RouterContext<string>) {
   const { paramtype, data } = args;
 
   switch (paramtype) {
+    case RouteParamtypes.REQUEST:
+      return ctx.request;
+    case RouteParamtypes.RESPONSE:
+      return ctx.response;
     case RouteParamtypes.QUERY:
       const query = helpers.getQuery(ctx);
       return data ? query[data.toString()] : query;
@@ -75,6 +79,9 @@ function getContextData(args: RouteArgsMetadata, ctx: RouterContext<string>) {
     case RouteParamtypes.BODY:
       const body = ctx.request.body();
       return body.value;
+    case RouteParamtypes.HEADERS:
+      const header: Headers = ctx.request.headers;
+      return data ? header.get(data.toString()) : Object.fromEntries(header);
     default:
       return;
   }
