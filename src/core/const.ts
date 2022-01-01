@@ -1,4 +1,3 @@
-export type HTTPMethods = "get" | "put" | "patch" | "post" | "delete";
-export const ACTION_KEY = Symbol("action");
-
-export const ROUTE_ARGS_METADATA = Symbol("__routeArguments__");
+export const METHOD_METADATA = Symbol("method");
+export const ROUTE_ARGS_METADATA = Symbol("routeArgs");
+export const MODULE_METADATA = Symbol("module");

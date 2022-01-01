@@ -2,6 +2,7 @@ import { Reflect } from "https://deno.land/x/reflect_metadata@v0.1.12-2/mod.ts";
 import { Router } from "oak";
 import { bootstrap } from "inject";
 
+import { MODULE_METADATA } from "../const.ts";
 import { CreateRouterOption } from "../interfaces/mod.ts";
 
 const createRouter = (
@@ -25,7 +26,7 @@ const createRouter = (
 
 const getRouter = (module: any, prefix?: string, router?: Router) => {
   const mainModuleOption: CreateRouterOption = Reflect.getMetadata(
-    "design:modules",
+    MODULE_METADATA,
     module.prototype
   );
 

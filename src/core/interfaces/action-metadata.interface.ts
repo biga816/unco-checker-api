@@ -1,4 +1,4 @@
-import { HTTPMethods } from "../const.ts";
+export type HTTPMethods = "get" | "put" | "patch" | "post" | "delete";
 
 export interface ActionMetadata {
   path: string;

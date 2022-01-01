@@ -4,7 +4,7 @@ import { Router, RouterContext, helpers } from "oak";
 
 import { ActionMetadata, RouteArgsMetadata } from "../interfaces/mod.ts";
 import { RouteParamtypes } from "../enums/mod.ts";
-import { ACTION_KEY, ROUTE_ARGS_METADATA } from "../const.ts";
+import { METHOD_METADATA, ROUTE_ARGS_METADATA } from "../const.ts";
 
 export function Controller<T extends { new (...instance: any[]): Object }>(
   path?: string
@@ -19,7 +19,7 @@ export function Controller<T extends { new (...instance: any[]): Object }>(
         this._path = prefix + (path ? `/${path}` : "");
         const route = new Router();
         const list: ActionMetadata[] = Reflect.getMetadata(
-          ACTION_KEY,
+          METHOD_METADATA,
           fn.prototype
         );
 

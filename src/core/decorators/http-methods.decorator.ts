@@ -1,6 +1,6 @@
 import { Reflect } from "https://deno.land/x/reflect_metadata@v0.1.12-2/mod.ts";
-import { ActionMetadata } from "../interfaces/mod.ts";
-import { ACTION_KEY, HTTPMethods } from "../const.ts";
+import { ActionMetadata, HTTPMethods } from "../interfaces/mod.ts";
+import { METHOD_METADATA } from "../const.ts";
 
 export const Get = mappingMethod("get");
 export const Post = mappingMethod("post");
@@ -12,7 +12,7 @@ function mappingMethod(method: HTTPMethods) {
   return (path = "") =>
     (target: any, functionName: string, _: PropertyDescriptor) => {
       const meta: ActionMetadata = { path, method, functionName };
-      addMetadata(meta, target, ACTION_KEY);
+      addMetadata(meta, target, METHOD_METADATA);
     };
 }
 
