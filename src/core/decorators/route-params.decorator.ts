@@ -7,27 +7,22 @@ import { RouteParamtypes } from "../enums/mod.ts";
 import { ROUTE_ARGS_METADATA } from "../const.ts";
 import { RouteArgsMetadata, ParamData } from "../interfaces/mod.ts";
 
-export interface Type<T = any> extends Function {
-  new (...args: any[]): T;
-}
+function createPipesRouteParamDecorator(paramtype: RouteParamtypes) {
+  return (data?: ParamData): ParameterDecorator =>
+    (target, key, index) => {
+      const args: RouteArgsMetadata[] =
+        Reflect.getMetadata(ROUTE_ARGS_METADATA, target, key) || [];
+      const hasParamData = isNotEmpty(data) || isString(data);
+      const paramData = hasParamData ? data : undefined;
 
-export interface RouteParamMetadata {
-  index: number;
-  data?: ParamData;
-}
+      args.push({
+        paramtype,
+        index,
+        data: paramData,
+      });
 
-export function assignMetadata(
-  args: RouteArgsMetadata[],
-  paramtype: RouteParamtypes,
-  index: number,
-  data?: ParamData
-) {
-  args.push({
-    paramtype,
-    index,
-    data,
-  });
-  return args;
+      Reflect.defineMetadata(ROUTE_ARGS_METADATA, args, target, key);
+    };
 }
 
 export function Query(property?: string): ParameterDecorator {
@@ -41,19 +36,3 @@ export function Param(property?: string): ParameterDecorator {
 export function Body(property?: string): ParameterDecorator {
   return createPipesRouteParamDecorator(RouteParamtypes.BODY)(property);
 }
-
-const createPipesRouteParamDecorator =
-  (paramtype: RouteParamtypes) =>
-  (data?: any): ParameterDecorator =>
-  (target, key, index) => {
-    const args = Reflect.getMetadata(ROUTE_ARGS_METADATA, target, key) || [];
-    const hasParamData = isNotEmpty(data) || isString(data);
-    const paramData = hasParamData ? data : undefined;
-
-    Reflect.defineMetadata(
-      ROUTE_ARGS_METADATA,
-      assignMetadata(args, paramtype, index, paramData),
-      target,
-      key
-    );
-  };
