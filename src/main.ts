@@ -1,5 +1,5 @@
 import { Application } from "oak";
-import { assignModule } from "core";
+import { assignModule } from "oak_decorators";
 import { AppModule } from "./app.module.ts";
 
 const app = new Application();

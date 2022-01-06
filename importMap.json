@@ -1,7 +1,7 @@
 {
   "imports": {
-    "core": "./src/core/mod.ts",
     "oak": "https://deno.land/x/oak@v10.0.0/mod.ts",
+    "oak_decorators": "https://deno.land/x/oak_decorators@v0.0.2/mod.ts",
     "inject": "https://deno.land/x/inject@v0.1.2/mod.ts"
   }
 }

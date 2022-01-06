@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Param, Body } from "core";
+import { Controller, Get, Post, Query, Param, Body } from "oak_decorators";
 import { AnalysisService } from "./analysis.service.ts";
 
 @Controller()

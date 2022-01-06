@@ -1,4 +1,4 @@
-import { Module } from "core";
+import { Module } from "oak_decorators";
 import { SampleController } from "./sample.controller.ts";
 
 @Module({

@@ -1,4 +1,4 @@
-import { Module } from "core";
+import { Module } from "oak_decorators";
 import { AnalysisController } from "./analysis.controller.ts";
 import { AnalysisService } from "./analysis.service.ts";
 

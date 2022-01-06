@@ -1,4 +1,4 @@
-import { Controller, Get, Headers, Request } from "core";
+import { Controller, Get, Headers } from "oak_decorators";
 
 @Controller("sample")
 export class SampleController {

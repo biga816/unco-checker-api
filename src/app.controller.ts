@@ -1,4 +1,4 @@
-import { Controller, Get } from "core";
+import { Controller, Get } from "oak_decorators";
 
 @Controller()
 export class AppController {
